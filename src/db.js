@@ -3,29 +3,35 @@ import env from "dotenv"
 
 env.config();
 
+const { Client } = require("pg");
+
+const client = new Client({
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: parseInt(process.env.PGPORT, 10),
+  ssl: {
+    rejectUnauthorized: false, // Railway requires this
+  },
+});
+
 console.log({
   user: process.env.PG_USER,
   password: process.env.PG_PASSWORD,
   port: typeof process.env.PG_PORT,
 });
-const db = new pg.Client({
-  user: process.env.PG_USER,
-  host: process.env.PG_HOST,
-  database: process.env.PG_DATABASE,
-  password: process.env.PG_PASSWORD,
-  port: parseInt(process.env.PG_PORT, 10), // <-- convert string to number here
-});
 
 //db.connect();
 
-db.connect()
+client.connect()
   .then(() => console.log("Connected to PostgreSQL"))
   .catch((err) => console.error("Connection error", err.stack));
 
 
-db.on('error', (err) => {
+client.on('error', (err) => {
     console.error('Unexpected error on idle client', err);
     process.exit(-1);
   });
 
-export const query = (text, params) => db.query(text, params);
+export const query = (text, params) => client.query(text, params);

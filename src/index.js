@@ -14,6 +14,7 @@ import { WebSocketServer } from "ws";
 import http from "http";
 import espRoutes from "./routes/espRoutes.js";
 
+require("dotenv").config();
 
 dotenv.config();
 
